@@ -12,19 +12,25 @@ For detailed system design, see [docs/design.md](docs/design.md)
 
 ## System Overview
 
+Control Flow: Sensor ECU → Drive ECU → Mission ECU (monitoring & command)
+
+```
+Sensor ECU (STM32F103)
+    │  CAN 0x020 · SENSOR_RAW (50ms)
+    ▼
+Drive ECU (STM32L4)
+    │  CAN 0x100 · SPEED_FB (50ms)
+    │  CAN 0x101 · VEHICLE_STATE (50ms)
+    │  CAN 0x200 · HEARTBEAT (100ms)
+    ▼
+Mission ECU (RPi5)
+```
+
 | Node | Board | Role |
 |---|---|---|
 | Sensor ECU | STM32F103 (MangoM32) | HC-SR04 × 4 measurement → CAN TX |
 | Drive ECU | STM32L4 (B-L475E-IOT01A) | Obstacle detection → PID control → Motor |
 | Mission ECU | Raspberry Pi 5 | SocketCAN monitoring, mode command |
-
-```
-[Sensor ECU]  →  CAN 0x020 (50ms)  →  [Drive ECU]
-                                             ↕
-                                       CAN 0x100 / 0x200
-                                             ↕
-                                      [Mission ECU]
-```
 
 ---
 
@@ -34,6 +40,7 @@ For detailed system design, see [docs/design.md](docs/design.md)
 - **Non-blocking ultrasonic measurement** — timer input capture instead of blocking `_delay_us()`
 - **Crosstalk prevention** — sequential trigger with timeout-based outlier rejection
 - **CAN-based distributed control** — 3-node single bus at 250 kbps
+- **State machine-based vehicle control** — obstacle avoidance and recovery logic implemented as explicit FSM
 - **SocketCAN monitoring** — Linux userspace C++ tool for real-time CAN frame logging
 - **DBC-based communication spec** — `docs/catnip_v2.dbc` written with Vector CANdb++ Editor
 
@@ -118,6 +125,8 @@ This project is developed based on experience from the **CATNIP** team project
 (CAN-based Autonomous Navigation and Transport Integration Platform).
 
 CATNIP implemented a delivery robot with line tracing, ArUco markers, MQTT,
-and cargo authentication. This project strips away the high-level features
-and rebuilds around real-time embedded fundamentals:
-FreeRTOS, CAN communication, and sensor-driven control.
+and cargo authentication. This project strips away high-level features and focuses on:
+
+- FreeRTOS-based real-time control
+- CAN-based distributed ECU communication
+- Sensor-driven vehicle control
