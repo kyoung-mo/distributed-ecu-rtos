@@ -43,10 +43,11 @@ For detailed system design, see [docs/design.md](docs/design.md)
 
 | CAN ID | Name | From | To | Period |
 |---|---|---|---|---|
-| 0x020 | SENSOR_RAW | Sensor ECU | Drive ECU | 50ms |
 | 0x010 | DRIVE_CMD | Mission ECU | Drive ECU | Event |
 | 0x011 | E_STOP | Mission ECU | Drive ECU | Immediate |
+| 0x020 | SENSOR_RAW | Sensor ECU | Drive ECU | 50ms |
 | 0x100 | SPEED_FB | Drive ECU | Mission ECU | 50ms |
+| 0x101 | VEHICLE_STATE | Drive ECU | Mission ECU | 50ms |
 | 0x200 | HEARTBEAT | Drive ECU | Mission ECU | 100ms |
 
 Full signal definition → [`docs/catnip_v2.dbc`](docs/catnip_v2.dbc)
