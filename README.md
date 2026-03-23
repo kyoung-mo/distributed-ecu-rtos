@@ -2,7 +2,7 @@
 
 > Distributed ECU-based vehicle control using CAN and RTOS
 
-This project is a personal redesign based on the [CATNIP](https://github.com/kyoung-mo/CATNIP) team project experience.  
+This project is a personal redesign based on the [CATNIP]([https://github.com/kyoung-mo/CATNIP](https://github.com/kyoung-mo/can-based-autonomous-delivery-car)) team project experience.  
 It focuses on a distributed ECU architecture using CAN communication,  
 FreeRTOS-based task separation, and ultrasonic sensor-driven autonomous vehicle control.
 
